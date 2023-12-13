@@ -1,7 +1,7 @@
 package io.hardingadonis.feizh.model;
 
-import io.hardingadonis.feizh.model.detail.TransactionType;
-import java.time.LocalDateTime;
+import io.hardingadonis.feizh.model.detail.*;
+import java.time.*;
 
 public class IncomeTransaction extends Transaction {
 
