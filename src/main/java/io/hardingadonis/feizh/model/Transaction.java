@@ -25,11 +25,12 @@ public class Transaction {
         this.type = type;
     }
 
-    public Transaction(int ID, int sourceWalletID, long amount, String description) {
+    public Transaction(int ID, int sourceWalletID, long amount, String description, TransactionType type) {
         this.ID = ID;
         this.sourceWalletID = sourceWalletID;
         this.amount = amount;
         this.description = description;
+        this.type = type;
     }
 
     public Transaction(int ID, int sourceWalletID, long amount, String description, TransactionType type, LocalDateTime createAt, LocalDateTime updateAt) {
