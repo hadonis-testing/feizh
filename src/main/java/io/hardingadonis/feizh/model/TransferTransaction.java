@@ -21,7 +21,7 @@ public class TransferTransaction extends Transaction {
         this.targetWalletID = targetWalletID;
     }
 
-    public TransferTransaction(int ID, int sourceWalletID, long amount, String description, TransactionType type, LocalDateTime createAt, int targetWalletID) {
+    public TransferTransaction(int ID, int sourceWalletID, long amount, String description, TransactionType type, int targetWalletID, LocalDateTime createAt) {
         super(ID, sourceWalletID, amount, description, type, createAt);
         this.targetWalletID = targetWalletID;
     }
