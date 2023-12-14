@@ -30,7 +30,6 @@ public class SQLiteExpenseTransactionDAOImpl implements IExpenseTransactionDAO {
         Connection conn = Singleton.dbContext.getConnection();
 
         try {
-
             PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction` NATURAL JOIN `expense_detail`");
 
             ResultSet rs = smt.executeQuery();

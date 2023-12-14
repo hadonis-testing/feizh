@@ -30,7 +30,6 @@ public class SQLiteIncomeTransactionDAOImpl implements IIncomeTransactionDAO {
         Connection conn = Singleton.dbContext.getConnection();
 
         try {
-
             PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction` NATURAL JOIN `income_detail`");
 
             ResultSet rs = smt.executeQuery();
