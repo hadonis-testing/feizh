@@ -25,7 +25,7 @@ public class SQLiteDBContextImpl implements IDBContext {
 
             connection = DriverManager.getConnection("jdbc:sqlite:" + this.url);
 
-            System.out.println("Connect SQLite successfully!");
+            System.out.println("Info: Connect SQLite successfully!");
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
         }
@@ -39,7 +39,7 @@ public class SQLiteDBContextImpl implements IDBContext {
             if (connection != null) {
                 connection.close();
 
-                System.out.println("Close SQLite successfully!");
+                System.out.println("Info: Close SQLite successfully!");
             }
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
@@ -55,7 +55,7 @@ public class SQLiteDBContextImpl implements IDBContext {
 
             smt.executeUpdate(queryCreatingTable);
 
-            System.out.println("Tables created successfully.");
+            System.out.println("Info: Tables created successfully.");
 
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
@@ -78,7 +78,6 @@ public class SQLiteDBContextImpl implements IDBContext {
 
         } catch (IOException ex) {
             System.err.println("Error: " + ex.getMessage());
-
         }
 
         return script.toString();

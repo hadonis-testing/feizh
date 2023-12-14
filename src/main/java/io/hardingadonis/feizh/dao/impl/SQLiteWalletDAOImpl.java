@@ -27,9 +27,9 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
     public List<Wallet> getAll() {
         List<Wallet> list = new ArrayList<>();
 
-        try {
-            Connection conn = Singleton.dbContext.getConnection();
+        Connection conn = Singleton.dbContext.getConnection();
 
+        try {
             PreparedStatement smt = conn.prepareStatement("SELECT * FROM `wallet` WHERE `delete_at` IS NULL");
 
             ResultSet rs = smt.executeQuery();
@@ -38,9 +38,10 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
                 list.add(getFromResultSet(rs));
             }
 
-            Singleton.dbContext.closeConnection(conn);
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            System.err.println("Error: " + ex.getMessage());
+        } finally {
+            Singleton.dbContext.closeConnection(conn);
         }
 
         return list;
@@ -50,9 +51,9 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
     public Wallet get(int ID) {
         Wallet wallet = null;
 
-        try {
-            Connection conn = Singleton.dbContext.getConnection();
+        Connection conn = Singleton.dbContext.getConnection();
 
+        try {
             PreparedStatement smt = conn.prepareStatement("SELECT * FROM `wallet` WHERE `id` = ? AND `delete_at` IS NULL");
             smt.setInt(1, ID);
 
@@ -62,9 +63,10 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
                 wallet = getFromResultSet(rs);
             }
 
-            Singleton.dbContext.closeConnection(conn);
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            System.err.println("Error: " + ex.getMessage());
+        } finally {
+            Singleton.dbContext.closeConnection(conn);
         }
 
         return wallet;
@@ -72,11 +74,9 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
 
     @Override
     public void insert(Wallet obj) {
-        Connection conn = null;
+        Connection conn = Singleton.dbContext.getConnection();
 
         try {
-            conn = Singleton.dbContext.getConnection();
-
             PreparedStatement smt = conn.prepareStatement("INSERT INTO `wallet`(`name`, `type`, `balance`, `create_at`) VALUES(?, ?, ?, ?)");
 
             smt.setString(1, obj.getName());
@@ -85,6 +85,7 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
             smt.setString(4, Converter.convert(LocalDateTime.now()));
 
             smt.executeUpdate();
+
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
         } finally {
@@ -94,11 +95,9 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
 
     @Override
     public void update(Wallet obj) {
-        Connection conn = null;
+        Connection conn = Singleton.dbContext.getConnection();
 
         try {
-            conn = Singleton.dbContext.getConnection();
-
             PreparedStatement smt = conn.prepareStatement("UPDATE `wallet` SET `name` = ?, `type` = ?, `balance` = ?, `update_at` = ? WHERE `id` = ? AND `delete_at` IS NULL");
 
             smt.setString(1, obj.getName());
@@ -108,6 +107,7 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
             smt.setInt(5, obj.getID());
 
             smt.executeUpdate();
+
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
         } finally {
@@ -117,18 +117,19 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
 
     @Override
     public void delete(int ID) {
-        try {
-            Connection conn = Singleton.dbContext.getConnection();
+        Connection conn = Singleton.dbContext.getConnection();
 
+        try {
             PreparedStatement smt = conn.prepareStatement("UPDATE `wallet` SET `delete_at` = ? WHERE id = ? AND `delete_at` IS NULL");
             smt.setString(1, Converter.convert(LocalDateTime.now()));
             smt.setInt(2, ID);
 
             smt.executeUpdate();
 
-            Singleton.dbContext.closeConnection(conn);
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            System.err.println("Error: " + ex.getMessage());
+        } finally {
+            Singleton.dbContext.closeConnection(conn);
         }
     }
 }

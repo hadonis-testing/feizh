@@ -27,9 +27,9 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
     public List<Category> getAll() {
         List<Category> list = new ArrayList<>();
 
-        try {
-            Connection conn = Singleton.dbContext.getConnection();
+        Connection conn = Singleton.dbContext.getConnection();
 
+        try {
             PreparedStatement smt = conn.prepareStatement("SELECT * FROM `category` WHERE `delete_at` IS NULL");
 
             ResultSet rs = smt.executeQuery();
@@ -38,9 +38,10 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
                 list.add(getFromResultSet(rs));
             }
 
-            Singleton.dbContext.closeConnection(conn);
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            System.err.println("Error: " + ex.getMessage());
+        } finally {
+            Singleton.dbContext.closeConnection(conn);
         }
 
         return list;
@@ -50,9 +51,9 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
     public Category get(int ID) {
         Category category = null;
 
-        try {
-            Connection conn = Singleton.dbContext.getConnection();
+        Connection conn = Singleton.dbContext.getConnection();
 
+        try {
             PreparedStatement smt = conn.prepareStatement("SELECT * FROM `category` WHERE `id` = ? AND `delete_at` IS NULL");
             smt.setInt(1, ID);
 
@@ -62,9 +63,10 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
                 category = getFromResultSet(rs);
             }
 
-            Singleton.dbContext.closeConnection(conn);
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            System.err.println("Error: " + ex.getMessage());
+        } finally {
+            Singleton.dbContext.closeConnection(conn);
         }
 
         return category;
@@ -72,11 +74,9 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
 
     @Override
     public void insert(Category obj) {
-        Connection conn = null;
+        Connection conn = Singleton.dbContext.getConnection();
 
         try {
-            conn = Singleton.dbContext.getConnection();
-
             PreparedStatement smt = conn.prepareStatement("INSERT INTO `category`(`name`, `description`, `type`, `create_at`) VALUES(?, ?, ?, ?)");
 
             smt.setString(1, obj.getName());
@@ -85,6 +85,7 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
             smt.setString(4, Converter.convert(LocalDateTime.now()));
 
             smt.executeUpdate();
+            
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
         } finally {
@@ -94,11 +95,9 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
 
     @Override
     public void update(Category obj) {
-        Connection conn = null;
+        Connection conn = Singleton.dbContext.getConnection();
 
         try {
-            conn = Singleton.dbContext.getConnection();
-
             PreparedStatement smt = conn.prepareStatement("UPDATE `category` SET `name` = ?, `description` = ?, `type` = ?, `update_at` = ? WHERE `id` = ? AND `delete_at` IS NULL");
 
             smt.setString(1, obj.getName());
@@ -108,6 +107,7 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
             smt.setInt(5, obj.getID());
 
             smt.executeUpdate();
+            
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
         } finally {
@@ -117,18 +117,19 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
 
     @Override
     public void delete(int ID) {
-        try {
-            Connection conn = Singleton.dbContext.getConnection();
+        Connection conn = Singleton.dbContext.getConnection();
 
+        try {
             PreparedStatement smt = conn.prepareStatement("UPDATE `category` SET `delete_at` = ? WHERE id = ? AND `delete_at` IS NULL");
             smt.setString(1, Converter.convert(LocalDateTime.now()));
             smt.setInt(2, ID);
 
             smt.executeUpdate();
-
-            Singleton.dbContext.closeConnection(conn);
+            
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            System.err.println("Error: " + ex.getMessage());
+        } finally {
+            Singleton.dbContext.closeConnection(conn);
         }
     }
 }
