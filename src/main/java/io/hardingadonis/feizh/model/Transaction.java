@@ -13,7 +13,6 @@ public class Transaction {
     private TransactionType type;
 
     private LocalDateTime createAt;
-    private LocalDateTime updateAt;
 
     public Transaction() {
     }
@@ -33,14 +32,13 @@ public class Transaction {
         this.type = type;
     }
 
-    public Transaction(int ID, int sourceWalletID, long amount, String description, TransactionType type, LocalDateTime createAt, LocalDateTime updateAt) {
+    public Transaction(int ID, int sourceWalletID, long amount, String description, TransactionType type, LocalDateTime createAt) {
         this.ID = ID;
         this.sourceWalletID = sourceWalletID;
         this.amount = amount;
         this.description = description;
         this.type = type;
         this.createAt = createAt;
-        this.updateAt = updateAt;
     }
 
     public int getID() {
@@ -91,16 +89,8 @@ public class Transaction {
         this.createAt = createAt;
     }
 
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
-    }
-
     @Override
     public String toString() {
-        return "Transaction{" + "ID=" + ID + ", sourceWalletID=" + sourceWalletID + ", amount=" + amount + ", description=" + description + ", type=" + type + ", createAt=" + createAt + ", updateAt=" + updateAt + '}';
+        return "Transaction{" + "ID=" + ID + ", sourceWalletID=" + sourceWalletID + ", amount=" + amount + ", description=" + description + ", type=" + type + ", createAt=" + createAt + '}';
     }
 }

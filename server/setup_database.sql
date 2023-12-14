@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS `transaction` (
   `description` TEXT DEFAULT NULL,
   `type` TEXT NOT NULL,
   `create_at` TEXT DEFAULT NULL,
-  `update_at` TEXT DEFAULT NULL,
   FOREIGN KEY (`source_wallet_id`) REFERENCES `wallet` (`id`)
 );
 

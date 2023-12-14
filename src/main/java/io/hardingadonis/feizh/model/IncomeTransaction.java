@@ -21,8 +21,8 @@ public class IncomeTransaction extends Transaction {
         this.categoryID = categoryID;
     }
 
-    public IncomeTransaction(int ID, int sourceWalletID, long amount, String description, TransactionType type, int categoryID, LocalDateTime createAt, LocalDateTime updateAt) {
-        super(ID, sourceWalletID, amount, description, type, createAt, updateAt);
+    public IncomeTransaction(int ID, int sourceWalletID, long amount, String description, TransactionType type, int categoryID, LocalDateTime createAt) {
+        super(ID, sourceWalletID, amount, description, type, createAt);
         this.categoryID = categoryID;
     }
 
