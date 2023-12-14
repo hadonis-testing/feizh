@@ -18,9 +18,8 @@ public class SQLiteTransactionDAOImpl implements ITransactionDAO {
         TransactionType type = TransactionType.create(rs.getString("type"));
 
         LocalDateTime createAt = Converter.convert(rs.getString("create_at"));
-        LocalDateTime updateAt = Converter.convert(rs.getString("update_at"));
 
-        return new Transaction(ID, sourceWalletID, amount, description, type, createAt, updateAt);
+        return new Transaction(ID, sourceWalletID, amount, description, type, createAt);
     }
 
     @Override
@@ -30,7 +29,6 @@ public class SQLiteTransactionDAOImpl implements ITransactionDAO {
         Connection conn = Singleton.dbContext.getConnection();
 
         try {
-
             PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction`");
 
             ResultSet rs = smt.executeQuery();
@@ -55,7 +53,6 @@ public class SQLiteTransactionDAOImpl implements ITransactionDAO {
         Connection conn = Singleton.dbContext.getConnection();
 
         try {
-
             PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction` WHERE `id` = ?");
             smt.setInt(1, ID);
 
@@ -75,12 +72,10 @@ public class SQLiteTransactionDAOImpl implements ITransactionDAO {
     }
 
     @Override
-    public void insert(Transaction obj) {
-        Connection conn = null;
-
+    public Connection insert(Transaction obj, boolean isContinue) {
+        Connection conn = Singleton.dbContext.getConnection();
+        
         try {
-            conn = Singleton.dbContext.getConnection();
-
             PreparedStatement smt = conn.prepareStatement("INSERT INTO `transaction`(`source_wallet_id`, `amount`, `description`, `type`, `create_at`) VALUES(?, ?, ?, ?, ?)");
 
             smt.setInt(1, obj.getSourceWalletID());
@@ -88,36 +83,19 @@ public class SQLiteTransactionDAOImpl implements ITransactionDAO {
             smt.setString(3, obj.getDescription());
             smt.setString(4, obj.getType().toString());
             smt.setString(5, Converter.convert(LocalDateTime.now()));
-
+            
             smt.executeUpdate();
+
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
         } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
-    }
+            if (!isContinue) {
+                Singleton.dbContext.closeConnection(conn);
 
-    @Override
-    public void update(Transaction obj) {
-        Connection conn = null;
-
-        try {
-            conn = Singleton.dbContext.getConnection();
-
-            PreparedStatement smt = conn.prepareStatement("UPDATE `transaction` SET `source_wallet_id` = ?, `amount` = ?, `description` = ?, `type` = ?, `update_at` = ? WHERE `id` = ?");
-
-            smt.setInt(1, obj.getSourceWalletID());
-            smt.setLong(2, obj.getAmount());
-            smt.setString(3, obj.getDescription());
-            smt.setString(4, obj.getType().toString());
-            smt.setString(5, Converter.convert(LocalDateTime.now()));
-            smt.setInt(6, obj.getID());
-
-            smt.executeUpdate();
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
+                return null;
+            } else {
+                return conn;
+            }
         }
     }
 }
