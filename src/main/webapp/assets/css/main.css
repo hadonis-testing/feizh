@@ -757,6 +757,9 @@ fieldset[disabled] .file-name, fieldset[disabled] .select select, .select fields
   border-top-color: transparent;
   content: "";
   display: block;
+  height: 1em;
+  position: relative;
+  width: 1em;
   position: absolute;
   top: 4em;
   left: calc(50% - 2.5em);
@@ -2248,7 +2251,7 @@ code {
   color: #da1039;
   font-size: 0.875em;
   font-weight: normal;
-  padding: 0.25em 0.5em;
+  padding: 0.25em 0.5em 0.25em;
 }
 
 hr {
@@ -3362,6 +3365,7 @@ a.box:active {
   pointer-events: none;
 }
 .button.is-loading::after {
+  position: absolute;
   left: calc(50% - (1em * 0.5));
   top: calc(50% - (1em * 0.5));
   position: absolute !important;
@@ -5759,6 +5763,7 @@ a.tag:hover {
   font-family: inherit;
   font-size: 1em;
   margin: 0;
+  padding: 0;
   align-items: center;
   cursor: pointer;
   display: flex;
@@ -12213,7 +12218,7 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 }
 @media screen and (min-width: 769px), print {
   .hero-body {
-    padding: 3rem;
+    padding: 3rem 3rem;
   }
 }
 
@@ -12222,7 +12227,7 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 }
 @media screen and (min-width: 1024px) {
   .section {
-    padding: 3rem;
+    padding: 3rem 3rem;
   }
   .section.is-medium {
     padding: 9rem 4.5rem;
