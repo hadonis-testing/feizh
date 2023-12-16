@@ -22,10 +22,8 @@
     </head>
 
     <body>
-        <div>
-            <%@include file="common/nav.jsp" %>
-            <%@include file="common/aside.jsp" %>
-        </div>
+        <%@include file="common/nav.jsp" %>
+        <%@include file="common/aside.jsp" %>
 
         <div class="container">
             <nav class="breadcrumb is-centered has-arrow-separator is-large" aria-label="breadcrumbs">
@@ -79,7 +77,7 @@
                             </td>
                             <td>
                                 <div class="buttons is-centered is-vcentered">
-                                    <button class="button is-danger is-outlined"type="button">
+                                    <button class="button is-danger is-outlined"type="button" onclick="deleteWallet(${wallet.ID})">
                                         <span class="icon">
                                             <i class="mdi mdi-trash-can"></i>
                                         </span>
@@ -95,6 +93,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bulma.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
+        <script src="<%=request.getContextPath()%>/assets/js/wallet.js"></script>
     </body>
 </html>
