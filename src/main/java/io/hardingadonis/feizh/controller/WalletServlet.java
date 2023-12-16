@@ -1,5 +1,7 @@
 package io.hardingadonis.feizh.controller;
 
+import io.hardingadonis.feizh.model.*;
+import io.hardingadonis.feizh.model.detail.*;
 import io.hardingadonis.feizh.utils.*;
 import java.io.*;
 import javax.servlet.*;
@@ -27,6 +29,21 @@ public class WalletServlet extends HttpServlet {
 
         switch (action) {
             case "add": {
+                try {
+                    String name = request.getParameter("name");
+                    WalletType type = WalletType.create(request.getParameter("type"));
+                    long balance = Long.parseLong(request.getParameter("balance"));
+
+                    Singleton.walletDAO.insert(new Wallet(name, type, balance));
+
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"status\":\"success\"}");
+
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } catch (NumberFormatException ex) {
+                    System.err.println("Error: " + ex.getMessage());
+                }
+
                 break;
             }
 
@@ -46,6 +63,8 @@ public class WalletServlet extends HttpServlet {
                 } catch (NumberFormatException ex) {
                     System.err.println("Error: " + ex.getMessage());
                 }
+
+                break;
             }
         }
     }

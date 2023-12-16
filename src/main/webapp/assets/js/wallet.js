@@ -46,3 +46,55 @@ function deleteWallet(ID) {
         }
     });
 }
+
+function addNewWallet() {
+    let name = document.getElementById("name").value;
+    let type = document.getElementById("type").value;
+    let balance = document.getElementById("balance").value;
+
+    const url = "wallet?action=add&name=" + name + "&type=" + type + "&balance=" + balance;
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            if (data.status === "success") {
+                Swal.fire({
+                    title: "Add success!",
+                    text: "Wallet added successfully!",
+                    icon: "success"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Oops...",
+                    text: "An error has occurred!",
+                    icon: "error"
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                title: "Oops...",
+                text: "An error occurred while sending the request!",
+                icon: "error"
+            });
+        }
+    });
+}
+
+function openModal() {
+    let modal = document.getElementById('add-new-wallet-modal');
+
+    modal.classList.add('is-active', 'animate__bounceIn');
+}
+
+function closeModal() {
+    let modal = document.getElementById('add-new-wallet-modal');
+
+    modal.classList.remove('is-active');
+}

@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bulma.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.3.67/css/materialdesignicons.min.css">
+        <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/main.css">
 
         <title>Feizh | Wallet Management</title>
@@ -25,7 +26,7 @@
         <%@include file="common/nav.jsp" %>
         <%@include file="common/aside.jsp" %>
 
-        <div class="container">
+        <div class="container has-text-centered">
             <nav class="breadcrumb is-centered has-arrow-separator is-large" aria-label="breadcrumbs">
                 <ul>
                     <li>
@@ -46,6 +47,8 @@
                     </li>
                 </ul>
             </nav>
+
+            <button class="button is-primary" id="add-new-wallet" onclick="openModal()">Add New Wallet</button>
         </div>
 
         <section class="section is-main-section">
@@ -89,6 +92,51 @@
                 </tbody>
             </table>
         </section>
+
+        <div id="add-new-wallet-modal" class="modal animate__animated">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Add New Wallet</p>
+                    <button class="delete" aria-label="close" onclick="closeModal()"></button>
+                </header>
+                <section class="modal-card-body">
+                    
+                        <div class="field">
+                            <label class="label">Name</label>
+                            <div class="control">
+                                <input class="input" type="text" name="name" placeholder="Name" id="name" autocomplete="off" required>
+                            </div>
+                        </div>
+
+                        <div name="action" value="add" hidden></div>
+
+                        <div class="field">
+                            <label class="label" id="type">Type</label>
+                            <div class="control">
+                                <div class="select">
+                                    <select name="type" required>
+                                        <option value="cash">Cash</option>
+                                        <option value="bank">Bank</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Balance</label>
+                            <div class="control">
+                                <input class="input" type="number" name="balance" placeholder="Balance" id="balance" autocomplete="off" required>
+                            </div>
+                        </div>
+                 
+                </section>
+                <footer class="modal-card-foot has-text-centered">
+                    <button class="button is-primary" onclick="addNewWallet()">Add New Wallet</button>
+                    <button class="button" onclick="closeModal()">Cancel</button>
+                </footer>
+            </div>
+        </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
