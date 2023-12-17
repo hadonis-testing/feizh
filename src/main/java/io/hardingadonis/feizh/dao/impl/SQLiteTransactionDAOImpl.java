@@ -29,7 +29,7 @@ public class SQLiteTransactionDAOImpl implements ITransactionDAO {
         Connection conn = Singleton.dbContext.getConnection();
 
         try {
-            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction`");
+            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction` ORDER BY `id` DESC");
 
             ResultSet rs = smt.executeQuery();
 

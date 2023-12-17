@@ -40,7 +40,7 @@
                     <li>
                         <a href="wallet" aria-current="page">
                             <span class="icon is-small">
-                                <i class="mdi mdi-wallet" aria-hidden="true"></i>
+                                <i class="mdi mdi-list-box" aria-hidden="true"></i>
                             </span>
                             <span>Category</span>
                         </a>
