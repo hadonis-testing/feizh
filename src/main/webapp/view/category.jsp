@@ -80,7 +80,7 @@
                             </td>
                             <td>
                                 <div class="buttons is-centered is-vcentered">
-                                    <button class="button is-danger is-outlined"type="button" onclick="deleteCategory(${description.ID})">
+                                    <button class="button is-danger is-outlined"type="button" onclick="deleteCategory(${category.ID})">
                                         <span class="icon">
                                             <i class="mdi mdi-trash-can"></i>
                                         </span>
