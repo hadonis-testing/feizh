@@ -39,7 +39,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="wallet" aria-current="page">
+                        <a href="transaction" aria-current="page">
                             <span class="icon is-small">
                                 <i class="mdi mdi-cash-multiple" aria-hidden="true"></i>
                             </span>

@@ -8,7 +8,7 @@
         <p class="menu-label">General</p>
         <ul class="menu-list">
             <li>
-                <a href="dashboard" class="has-icon">
+                <a href="dashboard" class="has-icon ${is_dashboard == true ? 'is-active' : ''}">
                     <span class="icon"><i class="mdi mdi-monitor-dashboard"></i></span>
                     <span class="menu-item-label">Dashboard</span>
                 </a>
