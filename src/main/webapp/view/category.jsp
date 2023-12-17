@@ -38,7 +38,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="wallet" aria-current="page">
+                        <a href="category" aria-current="page">
                             <span class="icon is-small">
                                 <i class="mdi mdi-list-box" aria-hidden="true"></i>
                             </span>
