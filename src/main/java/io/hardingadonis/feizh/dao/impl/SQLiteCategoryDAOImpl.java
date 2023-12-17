@@ -48,6 +48,31 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
     }
 
     @Override
+    public List<Category> getAll(CategoryType type) {
+        List<Category> list = new ArrayList<>();
+
+        Connection conn = Singleton.dbContext.getConnection();
+
+        try {
+            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `category` WHERE `type` = ? AND `delete_at` IS NULL");
+            smt.setString(1, type.toString());
+
+            ResultSet rs = smt.executeQuery();
+
+            while (rs.next()) {
+                list.add(getFromResultSet(rs));
+            }
+
+        } catch (SQLException ex) {
+            System.err.println("Error: " + ex.getMessage());
+        } finally {
+            Singleton.dbContext.closeConnection(conn);
+        }
+
+        return list;
+    }
+
+    @Override
     public Category get(int ID) {
         Category category = null;
 
@@ -85,7 +110,7 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
             smt.setString(4, Converter.convert(LocalDateTime.now()));
 
             smt.executeUpdate();
-            
+
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
         } finally {
@@ -107,7 +132,7 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
             smt.setInt(5, obj.getID());
 
             smt.executeUpdate();
-            
+
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
         } finally {
@@ -125,7 +150,7 @@ public class SQLiteCategoryDAOImpl implements ICategoryDAO {
             smt.setInt(2, ID);
 
             smt.executeUpdate();
-            
+
         } catch (SQLException ex) {
             System.err.println("Error: " + ex.getMessage());
         } finally {

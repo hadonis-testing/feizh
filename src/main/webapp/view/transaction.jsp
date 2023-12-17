@@ -48,7 +48,9 @@
                 </ul>
             </nav>
 
-            <button class="button is-primary" id="add-new-transaction" onclick="openModal()">Add New Transaction</button>
+            <a class="button is-primary" href="add-transaction?type=income">Add New Income Transaction</a>
+            <a class="button is-primary" href="add-transaction?type=expense">Add New Expense Transaction</a>
+            <a class="button is-primary" href="add-transaction?type=transfer">Add New Transfer Transaction</a>
         </div>
 
         <section class="section is-main-section">
