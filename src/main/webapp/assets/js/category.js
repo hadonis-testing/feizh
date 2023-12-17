@@ -47,6 +47,46 @@ function deleteCategory(ID) {
     });
 }
 
+function addNewCategory() {
+    let name = document.getElementById("name").value;
+    let type = document.getElementById("type").value;
+    let description = document.getElementById("description").value;
+
+    const url = "category?action=add&name=" + name + "&type=" + type + "&description=" + description;
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            if (data.status === "success") {
+                Swal.fire({
+                    title: "Add success!",
+                    text: "Category added successfully!",
+                    icon: "success"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Oops...",
+                    text: "An error has occurred!",
+                    icon: "error"
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                title: "Oops...",
+                text: "An error occurred while sending the request!",
+                icon: "error"
+            });
+        }
+    });
+}
+
 function openModal() {
     let modal = document.getElementById('add-new-category-modal');
 

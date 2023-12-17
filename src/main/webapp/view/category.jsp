@@ -101,38 +101,38 @@
                     <button class="delete" aria-label="close" onclick="closeModal()"></button>
                 </header>
                 <section class="modal-card-body">
-                    
-                        <div class="field">
-                            <label class="label">Name</label>
-                            <div class="control">
-                                <input class="input" type="text" name="name" placeholder="Name" id="name" autocomplete="off" required>
+
+                    <div class="field">
+                        <label class="label">Name</label>
+                        <div class="control">
+                            <input class="input" type="text" name="name" placeholder="Name" id="name" autocomplete="off" required>
+                        </div>
+                    </div>
+
+                    <div name="action" value="add" hidden></div>
+
+                    <div class="field">
+                        <label class="label">Description</label>
+                        <div class="control">
+                            <textarea class="textarea" type="text" name="description" placeholder="Description" id="description" autocomplete="off" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" id="type">Type</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="type" required>
+                                    <option value="income">Income</option>
+                                    <option value="expense">Expense</option>
+                                </select>
                             </div>
                         </div>
+                    </div>
 
-                        <div name="action" value="add" hidden></div>
-
-                        <div class="field">
-                            <label class="label" id="type">Type</label>
-                            <div class="control">
-                                <div class="select">
-                                    <select name="type" required>
-                                        <option value="cash">Cash</option>
-                                        <option value="bank">Bank</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="field">
-                            <label class="label">Balance</label>
-                            <div class="control">
-                                <input class="input" type="number" name="balance" placeholder="Balance" id="balance" autocomplete="off" required>
-                            </div>
-                        </div>
-                 
                 </section>
                 <footer class="modal-card-foot has-text-centered">
-                    <button class="button is-primary" onclick="addNewWallet()">Add New Wallet</button>
+                    <button class="button is-primary" onclick="addNewCategory()">Add New Category</button>
                     <button class="button" onclick="closeModal()">Cancel</button>
                 </footer>
             </div>

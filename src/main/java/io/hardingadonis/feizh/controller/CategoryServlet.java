@@ -1,5 +1,7 @@
 package io.hardingadonis.feizh.controller;
 
+import io.hardingadonis.feizh.model.*;
+import io.hardingadonis.feizh.model.detail.*;
 import io.hardingadonis.feizh.utils.*;
 import java.io.*;
 import javax.servlet.*;
@@ -27,6 +29,21 @@ public class CategoryServlet extends HttpServlet {
 
         switch (action) {
             case "add": {
+                try {
+                    String name = request.getParameter("name");
+                    CategoryType type = CategoryType.create(request.getParameter("type"));
+                    String description = request.getParameter("description");
+
+                    Singleton.categoryDAO.insert(new Category(name, description, type));
+
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"status\":\"success\"}");
+
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } catch (NumberFormatException ex) {
+                    System.err.println("Error: " + ex.getMessage());
+                }
+
                 break;
             }
 
