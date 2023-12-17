@@ -7,6 +7,8 @@ public interface IWalletDAO {
 
     public List<Wallet> getAll();
     
+    public List<Wallet> getRecentUpdates();
+    
     public Wallet get(int ID);
     
     public void insert(Wallet obj);

@@ -46,6 +46,30 @@ public class SQLiteWalletDAOImpl implements IWalletDAO {
 
         return list;
     }
+    
+    @Override
+    public List<Wallet> getRecentUpdates() {
+        List<Wallet> list = new ArrayList<>();
+
+        Connection conn = Singleton.dbContext.getConnection();
+
+        try {
+            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `wallet` WHERE `delete_at` IS NULL ORDER BY `update_at` DESC LIMIT 3");
+
+            ResultSet rs = smt.executeQuery();
+
+            while (rs.next()) {
+                list.add(getFromResultSet(rs));
+            }
+
+        } catch (SQLException ex) {
+            System.err.println("Error: " + ex.getMessage());
+        } finally {
+            Singleton.dbContext.closeConnection(conn);
+        }
+
+        return list;
+    }
 
     @Override
     public Wallet get(int ID) {
