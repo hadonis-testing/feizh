@@ -8,64 +8,68 @@ import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.*;
 
-@WebServlet(name = "WalletServlet", urlPatterns = {"/wallet"})
+@WebServlet(
+    name = "WalletServlet",
+    urlPatterns = {"/wallet"})
 public class WalletServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    request.setCharacterEncoding("UTF-8");
+    response.setContentType("text/html; charset=UTF-8");
 
-        request.setAttribute("is_wallet", true);
+    request.setAttribute("is_wallet", true);
 
-        request.getRequestDispatcher("/view/wallet.jsp").forward(request, response);
-    }
+    request.getRequestDispatcher("/view/wallet.jsp").forward(request, response);
+  }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String action = request.getParameter("action");
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    String action = request.getParameter("action");
 
-        switch (action) {
-            case "add": {
-                try {
-                    String name = request.getParameter("name");
-                    WalletType type = WalletType.create(request.getParameter("type"));
-                    long balance = Long.parseLong(request.getParameter("balance"));
+    switch (action) {
+      case "add":
+        {
+          try {
+            String name = request.getParameter("name");
+            WalletType type = WalletType.create(request.getParameter("type"));
+            long balance = Long.parseLong(request.getParameter("balance"));
 
-                    Singleton.walletDAO.insert(new Wallet(name, type, balance));
+            Singleton.walletDAO.insert(new Wallet(name, type, balance));
 
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"status\":\"success\"}");
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":\"success\"}");
 
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } catch (NumberFormatException ex) {
-                    System.err.println("Error: " + ex.getMessage());
-                }
+            response.setStatus(HttpServletResponse.SC_OK);
+          } catch (NumberFormatException ex) {
+            System.err.println("Error: " + ex.getMessage());
+          }
 
-                break;
+          break;
+        }
+
+      case "delete":
+        {
+          try {
+            int ID = Integer.parseInt(request.getParameter("id"));
+
+            if (Singleton.walletDAO.get(ID) != null) {
+              Singleton.walletDAO.delete(ID);
+
+              response.setContentType("application/json");
+              response.getWriter().write("{\"status\":\"success\"}");
+
+              response.setStatus(HttpServletResponse.SC_OK);
             }
 
-            case "delete": {
-                try {
-                    int ID = Integer.parseInt(request.getParameter("id"));
+          } catch (NumberFormatException ex) {
+            System.err.println("Error: " + ex.getMessage());
+          }
 
-                    if (Singleton.walletDAO.get(ID) != null) {
-                        Singleton.walletDAO.delete(ID);
-
-                        response.setContentType("application/json");
-                        response.getWriter().write("{\"status\":\"success\"}");
-
-                        response.setStatus(HttpServletResponse.SC_OK);
-                    }
-
-                } catch (NumberFormatException ex) {
-                    System.err.println("Error: " + ex.getMessage());
-                }
-
-                break;
-            }
+          break;
         }
     }
+  }
 }

@@ -5,9 +5,9 @@ import java.util.*;
 
 public interface ITransferTransactionDAO {
 
-    public List<TransferTransaction> getAll();
+  public List<TransferTransaction> getAll();
 
-    public TransferTransaction get(int ID);
+  public TransferTransaction get(int ID);
 
-    public void insert(TransferTransaction obj);
+  public void insert(TransferTransaction obj);
 }

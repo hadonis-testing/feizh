@@ -10,83 +10,90 @@ import java.util.*;
 
 public class SQLiteTransferTransactionDAOImpl implements ITransferTransactionDAO {
 
-    private static TransferTransaction getFromResultSet(ResultSet rs) throws SQLException {
-        int ID = rs.getInt("id");
-        int sourceWalletID = rs.getInt("source_wallet_id");
-        long amount = rs.getLong("amount");
-        String description = rs.getString("description");
-        TransactionType type = TransactionType.create(rs.getString("type"));
-        int targetWalletID = rs.getInt("target_wallet_id");
+  private static TransferTransaction getFromResultSet(ResultSet rs) throws SQLException {
+    int ID = rs.getInt("id");
+    int sourceWalletID = rs.getInt("source_wallet_id");
+    long amount = rs.getLong("amount");
+    String description = rs.getString("description");
+    TransactionType type = TransactionType.create(rs.getString("type"));
+    int targetWalletID = rs.getInt("target_wallet_id");
 
-        LocalDateTime createAt = Converter.convert(rs.getString("create_at"));
+    LocalDateTime createAt = Converter.convert(rs.getString("create_at"));
 
-        return new TransferTransaction(ID, sourceWalletID, amount, description, type, targetWalletID, createAt);
+    return new TransferTransaction(
+        ID, sourceWalletID, amount, description, type, targetWalletID, createAt);
+  }
+
+  @Override
+  public List<TransferTransaction> getAll() {
+    List<TransferTransaction> list = new ArrayList<>();
+
+    Connection conn = Singleton.dbContext.getConnection();
+
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement("SELECT * FROM `transaction` NATURAL JOIN `transfer_detail`");
+
+      ResultSet rs = smt.executeQuery();
+
+      while (rs.next()) {
+        list.add(getFromResultSet(rs));
+      }
+
+    } catch (SQLException ex) {
+      System.err.println(ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
-    
-    @Override
-    public List<TransferTransaction> getAll() {
-        List<TransferTransaction> list = new ArrayList<>();
 
-        Connection conn = Singleton.dbContext.getConnection();
+    return list;
+  }
 
-        try {
-            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction` NATURAL JOIN `transfer_detail`");
+  @Override
+  public TransferTransaction get(int ID) {
+    TransferTransaction transaction = null;
 
-            ResultSet rs = smt.executeQuery();
+    Connection conn = Singleton.dbContext.getConnection();
 
-            while (rs.next()) {
-                list.add(getFromResultSet(rs));
-            }
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement(
+              "SELECT * FROM `transaction` NATURAL JOIN `transfer_detail` WHERE `id` = ?");
+      smt.setInt(1, ID);
 
-        } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
+      ResultSet rs = smt.executeQuery();
 
-        return list;
+      if (rs.next()) {
+        transaction = getFromResultSet(rs);
+      }
+
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
 
-    @Override
-    public TransferTransaction get(int ID) {
-        TransferTransaction transaction = null;
+    return transaction;
+  }
 
-        Connection conn = Singleton.dbContext.getConnection();
+  @Override
+  public void insert(TransferTransaction obj) {
+    Connection conn = Singleton.transactionDAO.insert(obj, true);
 
-        try {
-            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction` NATURAL JOIN `transfer_detail` WHERE `id` = ?");
-            smt.setInt(1, ID);
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement(
+              "INSERT INTO `transfer_detail`(`id`, `target_wallet_id`) VALUES(LAST_INSERT_ROWID(),"
+                  + " ?)");
 
-            ResultSet rs = smt.executeQuery();
+      smt.setInt(1, obj.getTargetWalletID());
 
-            if (rs.next()) {
-                transaction = getFromResultSet(rs);
-            }
+      smt.executeUpdate();
 
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
-
-        return transaction;
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
-    
-    @Override
-    public void insert(TransferTransaction obj) {
-        Connection conn = Singleton.transactionDAO.insert(obj, true);
-
-        try {
-            PreparedStatement smt = conn.prepareStatement("INSERT INTO `transfer_detail`(`id`, `target_wallet_id`) VALUES(LAST_INSERT_ROWID(), ?)");
-
-            smt.setInt(1, obj.getTargetWalletID());
-
-            smt.executeUpdate();
-            
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
-    }
+  }
 }

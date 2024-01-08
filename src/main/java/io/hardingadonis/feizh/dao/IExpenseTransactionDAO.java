@@ -5,9 +5,9 @@ import java.util.*;
 
 public interface IExpenseTransactionDAO {
 
-    public List<ExpenseTransaction> getAll();
+  public List<ExpenseTransaction> getAll();
 
-    public ExpenseTransaction get(int ID);
+  public ExpenseTransaction get(int ID);
 
-    public void insert(ExpenseTransaction obj);
+  public void insert(ExpenseTransaction obj);
 }

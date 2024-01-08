@@ -5,15 +5,15 @@ import java.util.*;
 
 public interface IWalletDAO {
 
-    public List<Wallet> getAll();
-    
-    public List<Wallet> getRecentUpdates();
-    
-    public Wallet get(int ID);
-    
-    public void insert(Wallet obj);
-    
-    public void update(Wallet obj);
-    
-    public void delete(int ID);
+  public List<Wallet> getAll();
+
+  public List<Wallet> getRecentUpdates();
+
+  public Wallet get(int ID);
+
+  public void insert(Wallet obj);
+
+  public void update(Wallet obj);
+
+  public void delete(int ID);
 }
