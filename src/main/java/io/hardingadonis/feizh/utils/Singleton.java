@@ -7,33 +7,33 @@ import io.hardingadonis.feizh.dao.impl.*;
 
 public class Singleton {
 
-    public static IDBContext dbContext;
+  public static IDBContext dbContext;
 
-    public static ICategoryDAO categoryDAO;
-    
-    public static IExpenseTransactionDAO expenseTransactionDAO;
+  public static ICategoryDAO categoryDAO;
 
-    public static IIncomeTransactionDAO incomeTransactionDAO;
+  public static IExpenseTransactionDAO expenseTransactionDAO;
 
-    public static ITransactionDAO transactionDAO;
-    
-    public static ITransferTransactionDAO transferTransactionDAO;
+  public static IIncomeTransactionDAO incomeTransactionDAO;
 
-    public static IWalletDAO walletDAO;
+  public static ITransactionDAO transactionDAO;
 
-    static {
-        dbContext = new SQLiteDBContextImpl();
+  public static ITransferTransactionDAO transferTransactionDAO;
 
-        categoryDAO = new SQLiteCategoryDAOImpl();
-        
-        expenseTransactionDAO = new SQLiteExpenseTransactionDAOImpl();
+  public static IWalletDAO walletDAO;
 
-        incomeTransactionDAO = new SQLiteIncomeTransactionDAOImpl();
+  static {
+    dbContext = new SQLiteDBContextImpl();
 
-        transactionDAO = new SQLiteTransactionDAOImpl();
-        
-        transferTransactionDAO = new SQLiteTransferTransactionDAOImpl();
+    categoryDAO = new SQLiteCategoryDAOImpl();
 
-        walletDAO = new SQLiteWalletDAOImpl();
-    }
+    expenseTransactionDAO = new SQLiteExpenseTransactionDAOImpl();
+
+    incomeTransactionDAO = new SQLiteIncomeTransactionDAOImpl();
+
+    transactionDAO = new SQLiteTransactionDAOImpl();
+
+    transferTransactionDAO = new SQLiteTransferTransactionDAOImpl();
+
+    walletDAO = new SQLiteWalletDAOImpl();
+  }
 }

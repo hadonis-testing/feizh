@@ -10,83 +10,89 @@ import java.util.*;
 
 public class SQLiteExpenseTransactionDAOImpl implements IExpenseTransactionDAO {
 
-    private static ExpenseTransaction getFromResultSet(ResultSet rs) throws SQLException {
-        int ID = rs.getInt("id");
-        int sourceWalletID = rs.getInt("source_wallet_id");
-        long amount = rs.getLong("amount");
-        String description = rs.getString("description");
-        TransactionType type = TransactionType.create(rs.getString("type"));
-        int categoryID = rs.getInt("category_id");
+  private static ExpenseTransaction getFromResultSet(ResultSet rs) throws SQLException {
+    int ID = rs.getInt("id");
+    int sourceWalletID = rs.getInt("source_wallet_id");
+    long amount = rs.getLong("amount");
+    String description = rs.getString("description");
+    TransactionType type = TransactionType.create(rs.getString("type"));
+    int categoryID = rs.getInt("category_id");
 
-        LocalDateTime createAt = Converter.convert(rs.getString("create_at"));
+    LocalDateTime createAt = Converter.convert(rs.getString("create_at"));
 
-        return new ExpenseTransaction(ID, sourceWalletID, amount, description, type, categoryID, createAt);
+    return new ExpenseTransaction(
+        ID, sourceWalletID, amount, description, type, categoryID, createAt);
+  }
+
+  @Override
+  public List<ExpenseTransaction> getAll() {
+    List<ExpenseTransaction> list = new ArrayList<>();
+
+    Connection conn = Singleton.dbContext.getConnection();
+
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement("SELECT * FROM `transaction` NATURAL JOIN `expense_detail`");
+
+      ResultSet rs = smt.executeQuery();
+
+      while (rs.next()) {
+        list.add(getFromResultSet(rs));
+      }
+
+    } catch (SQLException ex) {
+      System.err.println(ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
 
-    @Override
-    public List<ExpenseTransaction> getAll() {
-        List<ExpenseTransaction> list = new ArrayList<>();
+    return list;
+  }
 
-        Connection conn = Singleton.dbContext.getConnection();
+  @Override
+  public ExpenseTransaction get(int ID) {
+    ExpenseTransaction transaction = null;
 
-        try {
-            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction` NATURAL JOIN `expense_detail`");
+    Connection conn = Singleton.dbContext.getConnection();
 
-            ResultSet rs = smt.executeQuery();
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement(
+              "SELECT * FROM `transaction` NATURAL JOIN `expense_detail` WHERE `id` = ?");
+      smt.setInt(1, ID);
 
-            while (rs.next()) {
-                list.add(getFromResultSet(rs));
-            }
+      ResultSet rs = smt.executeQuery();
 
-        } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
+      if (rs.next()) {
+        transaction = getFromResultSet(rs);
+      }
 
-        return list;
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
 
-    @Override
-    public ExpenseTransaction get(int ID) {
-        ExpenseTransaction transaction = null;
+    return transaction;
+  }
 
-        Connection conn = Singleton.dbContext.getConnection();
+  @Override
+  public void insert(ExpenseTransaction obj) {
+    Connection conn = Singleton.transactionDAO.insert(obj, true);
 
-        try {
-            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `transaction` NATURAL JOIN `expense_detail` WHERE `id` = ?");
-            smt.setInt(1, ID);
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement(
+              "INSERT INTO `expense_detail`(`id`, `category_id`) VALUES(LAST_INSERT_ROWID(), ?)");
 
-            ResultSet rs = smt.executeQuery();
+      smt.setInt(1, obj.getCategoryID());
 
-            if (rs.next()) {
-                transaction = getFromResultSet(rs);
-            }
+      smt.executeUpdate();
 
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
-
-        return transaction;
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
-
-    @Override
-    public void insert(ExpenseTransaction obj) {
-        Connection conn = Singleton.transactionDAO.insert(obj, true);
-
-        try {
-            PreparedStatement smt = conn.prepareStatement("INSERT INTO `expense_detail`(`id`, `category_id`) VALUES(LAST_INSERT_ROWID(), ?)");
-
-            smt.setInt(1, obj.getCategoryID());
-
-            smt.executeUpdate();
-
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
-    }
+  }
 }

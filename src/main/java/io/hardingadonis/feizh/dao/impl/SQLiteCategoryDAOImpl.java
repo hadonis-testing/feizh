@@ -10,151 +10,163 @@ import java.util.*;
 
 public class SQLiteCategoryDAOImpl implements ICategoryDAO {
 
-    private static Category getFromResultSet(ResultSet rs) throws SQLException {
-        int ID = rs.getInt("id");
-        String name = rs.getString("name");
-        String description = rs.getString("description");
-        CategoryType type = CategoryType.create(rs.getString("type"));
+  private static Category getFromResultSet(ResultSet rs) throws SQLException {
+    int ID = rs.getInt("id");
+    String name = rs.getString("name");
+    String description = rs.getString("description");
+    CategoryType type = CategoryType.create(rs.getString("type"));
 
-        LocalDateTime createAt = Converter.convert(rs.getString("create_at"));
-        LocalDateTime updateAt = Converter.convert(rs.getString("update_at"));
-        LocalDateTime deleteAt = Converter.convert(rs.getString("delete_at"));
+    LocalDateTime createAt = Converter.convert(rs.getString("create_at"));
+    LocalDateTime updateAt = Converter.convert(rs.getString("update_at"));
+    LocalDateTime deleteAt = Converter.convert(rs.getString("delete_at"));
 
-        return new Category(ID, name, description, type, createAt, updateAt, deleteAt);
+    return new Category(ID, name, description, type, createAt, updateAt, deleteAt);
+  }
+
+  @Override
+  public List<Category> getAll() {
+    List<Category> list = new ArrayList<>();
+
+    Connection conn = Singleton.dbContext.getConnection();
+
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement("SELECT * FROM `category` WHERE `delete_at` IS NULL");
+
+      ResultSet rs = smt.executeQuery();
+
+      while (rs.next()) {
+        list.add(getFromResultSet(rs));
+      }
+
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
 
-    @Override
-    public List<Category> getAll() {
-        List<Category> list = new ArrayList<>();
+    return list;
+  }
 
-        Connection conn = Singleton.dbContext.getConnection();
+  @Override
+  public List<Category> getAll(CategoryType type) {
+    List<Category> list = new ArrayList<>();
 
-        try {
-            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `category` WHERE `delete_at` IS NULL");
+    Connection conn = Singleton.dbContext.getConnection();
 
-            ResultSet rs = smt.executeQuery();
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement(
+              "SELECT * FROM `category` WHERE `type` = ? AND `delete_at` IS NULL");
+      smt.setString(1, type.toString());
 
-            while (rs.next()) {
-                list.add(getFromResultSet(rs));
-            }
+      ResultSet rs = smt.executeQuery();
 
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
+      while (rs.next()) {
+        list.add(getFromResultSet(rs));
+      }
 
-        return list;
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
 
-    @Override
-    public List<Category> getAll(CategoryType type) {
-        List<Category> list = new ArrayList<>();
+    return list;
+  }
 
-        Connection conn = Singleton.dbContext.getConnection();
+  @Override
+  public Category get(int ID) {
+    Category category = null;
 
-        try {
-            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `category` WHERE `type` = ? AND `delete_at` IS NULL");
-            smt.setString(1, type.toString());
+    Connection conn = Singleton.dbContext.getConnection();
 
-            ResultSet rs = smt.executeQuery();
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement("SELECT * FROM `category` WHERE `id` = ? AND `delete_at` IS NULL");
+      smt.setInt(1, ID);
 
-            while (rs.next()) {
-                list.add(getFromResultSet(rs));
-            }
+      ResultSet rs = smt.executeQuery();
 
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
+      if (rs.next()) {
+        category = getFromResultSet(rs);
+      }
 
-        return list;
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
 
-    @Override
-    public Category get(int ID) {
-        Category category = null;
+    return category;
+  }
 
-        Connection conn = Singleton.dbContext.getConnection();
+  @Override
+  public void insert(Category obj) {
+    Connection conn = Singleton.dbContext.getConnection();
 
-        try {
-            PreparedStatement smt = conn.prepareStatement("SELECT * FROM `category` WHERE `id` = ? AND `delete_at` IS NULL");
-            smt.setInt(1, ID);
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement(
+              "INSERT INTO `category`(`name`, `description`, `type`, `create_at`) VALUES(?, ?, ?,"
+                  + " ?)");
 
-            ResultSet rs = smt.executeQuery();
+      smt.setString(1, obj.getName());
+      smt.setString(2, obj.getDescription());
+      smt.setString(3, obj.getType().toString());
+      smt.setString(4, Converter.convert(LocalDateTime.now()));
 
-            if (rs.next()) {
-                category = getFromResultSet(rs);
-            }
+      smt.executeUpdate();
 
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
-
-        return category;
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
+  }
 
-    @Override
-    public void insert(Category obj) {
-        Connection conn = Singleton.dbContext.getConnection();
+  @Override
+  public void update(Category obj) {
+    Connection conn = Singleton.dbContext.getConnection();
 
-        try {
-            PreparedStatement smt = conn.prepareStatement("INSERT INTO `category`(`name`, `description`, `type`, `create_at`) VALUES(?, ?, ?, ?)");
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement(
+              "UPDATE `category` SET `name` = ?, `description` = ?, `type` = ?, `update_at` = ?"
+                  + " WHERE `id` = ? AND `delete_at` IS NULL");
 
-            smt.setString(1, obj.getName());
-            smt.setString(2, obj.getDescription());
-            smt.setString(3, obj.getType().toString());
-            smt.setString(4, Converter.convert(LocalDateTime.now()));
+      smt.setString(1, obj.getName());
+      smt.setString(2, obj.getDescription());
+      smt.setString(3, obj.getType().toString());
+      smt.setString(4, Converter.convert(LocalDateTime.now()));
+      smt.setInt(5, obj.getID());
 
-            smt.executeUpdate();
+      smt.executeUpdate();
 
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
+  }
 
-    @Override
-    public void update(Category obj) {
-        Connection conn = Singleton.dbContext.getConnection();
+  @Override
+  public void delete(int ID) {
+    Connection conn = Singleton.dbContext.getConnection();
 
-        try {
-            PreparedStatement smt = conn.prepareStatement("UPDATE `category` SET `name` = ?, `description` = ?, `type` = ?, `update_at` = ? WHERE `id` = ? AND `delete_at` IS NULL");
+    try {
+      PreparedStatement smt =
+          conn.prepareStatement(
+              "UPDATE `category` SET `delete_at` = ? WHERE id = ? AND `delete_at` IS NULL");
+      smt.setString(1, Converter.convert(LocalDateTime.now()));
+      smt.setInt(2, ID);
 
-            smt.setString(1, obj.getName());
-            smt.setString(2, obj.getDescription());
-            smt.setString(3, obj.getType().toString());
-            smt.setString(4, Converter.convert(LocalDateTime.now()));
-            smt.setInt(5, obj.getID());
+      smt.executeUpdate();
 
-            smt.executeUpdate();
-
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
+    } catch (SQLException ex) {
+      System.err.println("Error: " + ex.getMessage());
+    } finally {
+      Singleton.dbContext.closeConnection(conn);
     }
-
-    @Override
-    public void delete(int ID) {
-        Connection conn = Singleton.dbContext.getConnection();
-
-        try {
-            PreparedStatement smt = conn.prepareStatement("UPDATE `category` SET `delete_at` = ? WHERE id = ? AND `delete_at` IS NULL");
-            smt.setString(1, Converter.convert(LocalDateTime.now()));
-            smt.setInt(2, ID);
-
-            smt.executeUpdate();
-
-        } catch (SQLException ex) {
-            System.err.println("Error: " + ex.getMessage());
-        } finally {
-            Singleton.dbContext.closeConnection(conn);
-        }
-    }
+  }
 }

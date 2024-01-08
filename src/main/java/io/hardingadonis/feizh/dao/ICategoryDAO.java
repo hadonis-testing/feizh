@@ -6,15 +6,15 @@ import java.util.*;
 
 public interface ICategoryDAO {
 
-    public List<Category> getAll();
-    
-    public List<Category> getAll(CategoryType type);
+  public List<Category> getAll();
 
-    public Category get(int ID);
+  public List<Category> getAll(CategoryType type);
 
-    public void insert(Category obj);
+  public Category get(int ID);
 
-    public void update(Category obj);
+  public void insert(Category obj);
 
-    public void delete(int ID);
+  public void update(Category obj);
+
+  public void delete(int ID);
 }
